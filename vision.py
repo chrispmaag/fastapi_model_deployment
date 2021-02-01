@@ -1,19 +1,21 @@
 # Source: https://towardsdatascience.com/deployment-could-be-easy-a-data-scientists-guide-to-deploy-an-image-detection-fastapi-api-using-329cdd80400
 from fastapi import FastAPI
 from pydantic import BaseModel
+# Working through virtual environment import issues for torch when 
+# executing $ uvicorn vision:app --reload
 import torchvision
 from torchvision import transforms
 import torch
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from PIL import Image
 import numpy as np
-import cv2
+# import cv2
 import io, json
 import base64
 
 app = FastAPI()
 
-model = torchvision.models.detection.fasterrcc_resnet50_fpn(pretrained=True)
+model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
 COCO_INSTANCE_CATEGORY_NAMES = [
     '__background__', 'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus',
     'train', 'truck', 'boat', 'traffic light', 'fire hydrant', 'N/A', 'stop sign',
@@ -36,7 +38,7 @@ class Input(BaseModel):
 
 def base64str_to_PILImage(base64str):
     base64_img_bytes = base64str.encode('utf-8')
-    base64bytes = base4.b64decode(base64_img_bytes)
+    base64bytes = base64.b64decode(base64_img_bytes)
     bytesObj = io.BytesIO(base64bytes)
     img = Image.open(bytesObj)
     return img
@@ -44,7 +46,7 @@ def base64str_to_PILImage(base64str):
 @app.put("/predict")
 def get_predictionbase64(d:Input):
     img = base64str_to_PILImage(d.base64str)
-    transform - transforms.Compose([transforms.ToTensor()]) 
+    transform = transforms.Compose([transforms.ToTensor()]) 
     img = transform(img)
     pred = model([img])
     pred_class = [COCO_INSTANCE_CATEGORY_NAMES[i] for i in list(pred[0]['labels'].numpy())]
