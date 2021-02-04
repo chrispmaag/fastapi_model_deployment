@@ -17,7 +17,9 @@ app = FastAPI()
 
 # load a pre-trained Model and convert it to eval mode.
 # This model loads just once when we start the API.
+# Load a pre-trained Faster R-CNN model with ResNet-50-FPN backbone
 model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
+# Reference for this list of classes: https://pytorch.org/vision/stable/models.html#object-detection-instance-segmentation-and-person-keypoint-detection
 COCO_INSTANCE_CATEGORY_NAMES = [
     '__background__', 'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus',
     'train', 'truck', 'boat', 'traffic light', 'fire hydrant', 'N/A', 'stop sign',
@@ -32,17 +34,17 @@ COCO_INSTANCE_CATEGORY_NAMES = [
     'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'N/A', 'book',
     'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush'
 ]
+# Sets module to evaluation mode, which turns off certain layers like Dropout and BatchNorm during model evaluation
 model.eval()
 
-# define the Input class
-
-
+# define the Input class, which inherits from pydantic's BaseModel
 class Input(BaseModel):
 	base64str: str
 	threshold: float
 
 
 def base64str_to_PILImage(base64str):
+    """Convert base64 str to PIL Image."""
 	base64_img_bytes = base64str.encode('utf-8')
 	base64bytes = base64.b64decode(base64_img_bytes)
 	bytesObj = io.BytesIO(base64bytes)
