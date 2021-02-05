@@ -17,6 +17,14 @@ app = FastAPI()
 
 # load a pre-trained Model and convert it to eval mode.
 # This model loads just once when we start the API.
+# Other models I can bring in to test on:
+# Semantic segmentation: 
+# torchvision.models.segmentation.fcn_resnet50(pretrained=False, progress=True, num_classes=21, aux_loss=None, **kwargs)
+# torchvision.models.segmentation.deeplabv3_resnet50(pretrained=False, progress=True, num_classes=21, aux_loss=None, **kwargs)
+
+# Person Keypoint Detection
+# torchvision.models.detection.keypointrcnn_resnet50_fpn(pretrained=False, progress=True, num_classes=2, num_keypoints=17, pretrained_backbone=True, trainable_backbone_layers=3, **kwargs)
+
 # Load a pre-trained Faster R-CNN model with ResNet-50-FPN backbone
 model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
 # Reference for this list of classes: https://pytorch.org/vision/stable/models.html#object-detection-instance-segmentation-and-person-keypoint-detection
